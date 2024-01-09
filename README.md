@@ -1,7 +1,7 @@
 # Parallel port output plugin
 A plugin that sends TTL events for a given channel over a parallel port. 
 
-![Parallel port plugin image](parallel-port-image.png)
+![Parallel port plugin image](parallel-port-image.PNG)
 
 ### Parameters
 
