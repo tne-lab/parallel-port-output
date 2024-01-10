@@ -73,6 +73,7 @@ void ParallelPortOutput::process(AudioSampleBuffer& continuousBuffer)
     {
         setPort(false);
         offSample = -1;
+        std::cout << "Setting to low" << std::endl;
     }
     
     checkForEvents(false);
@@ -88,10 +89,12 @@ void ParallelPortOutput::handleEvent(const EventChannel* channelInfo, const Midi
 
         if (ttl->getChannel() == eventChannel && ttl->getState())
         {
+            
             setPort(true);
             int timeout = 10;
             int sampleRate = getTotalDataChannels() > 0 ? getDataChannel(0)->getSampleRate() : 30000;
             offSample = ttl->getTimestamp() + int(std::floor(duration * sampleRate / 1000.0f));
+            std::cout << "Received TTL event, setting port to high. Off sample:" << offSample << std::endl;
         }
     }
 }
