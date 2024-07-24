@@ -11,7 +11,7 @@
 #ifndef PARALLELPORTOUTPUTEDITOR_H_INCLUDED
 #define PARALLELPORTOUTPUTEDITOR_H_INCLUDED
 
-#include <EditorHeaders.h>
+//#include <EditorHeaders.h>
 
 
 /**
@@ -21,15 +21,21 @@
  @see ParallelPortOutput
 
  */
+#include <VisualizerEditorHeaders.h>
 
-class ParallelPortOutputEditor
-    : public GenericEditor
+class ParallelPortOutputEditor : public VisualizerEditor
     , public Label::Listener
     , public ComboBox::Listener
     , public Button::Listener
 {
 public:
-    ParallelPortOutputEditor(GenericProcessor* parentNode, bool useDefaultParameterEditors);
+    ParallelPortOutputEditor(GenericProcessor* parentNode);
+
+    /** Destructor */
+    ~ParallelPortOutputEditor() { }
+
+    /** Creates the canvas */
+    Visualizer* createNewCanvas();
 
     void labelTextChanged(juce::Label* label) override;
     void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
@@ -38,8 +44,8 @@ public:
 
     void buttonClicked(Button* button) override;
 
-    void saveCustomParameters(XmlElement* xml) override;
-    void loadCustomParameters(XmlElement* xml) override;
+    void saveVisualizerEditorParameters(XmlElement* xml) override;
+    void loadVisualizerEditorParameters(XmlElement* xml) override;
 
 private:
     ScopedPointer<Label> inChanLabel;

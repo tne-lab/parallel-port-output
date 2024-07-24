@@ -25,13 +25,21 @@ public:
 
     void setParameter(int parameterIndex, float newValue) override;
 
-    void process(AudioSampleBuffer& continuousBuffer) override;
-    void handleEvent(const EventChannel* channelInfo, const MidiMessage& event, int samplePosition = 0) override;
+    /*start required updated for v6*/ 
+    void process(AudioBuffer<float>& continuousBuffer) override;
 
-    bool disable() override;
+
+    /** Responds to incoming events if a stimEventChannel is selected. */
+    void handleTTLEvent(TTLEventPtr event) override;
+    //void handleEvent(const EventChannel* channelInfo, const MidiMessage& event, int samplePosition = 0) override;
+
+    /*bool disable() override; is bool stopAcquisition() override; updated in v6*/
+    bool stopAcquisition() override;
+    /*end required updated for v6*/
 
     bool setMapPath(std::string filePath);
 
+    // for consistency across, might be better to keep it out
     enum Parameter
     {
         PORT,

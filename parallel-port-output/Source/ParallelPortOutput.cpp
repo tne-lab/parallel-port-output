@@ -32,7 +32,7 @@ ParallelPortOutput::ParallelPortOutput()
     , duration(10)
     , pinState(0x00)
 {
-    setProcessorType (PROCESSOR_TYPE_SINK);
+    setProcessorType(Plugin::Processor::SINK);
 }
 
 std::string toBinaryString(uint8_t byte) {
@@ -41,8 +41,8 @@ std::string toBinaryString(uint8_t byte) {
 
 AudioProcessorEditor* ParallelPortOutput::createEditor()
 {
-    editor = new ParallelPortOutputEditor(this, true);
-    return editor;
+    editor = std::make_unique<ParallelPortOutputEditor>(this);
+    return editor.get();
 }
 
 void ParallelPortOutput::setParameter(int parameterIndex, float newValue)
@@ -68,7 +68,11 @@ void ParallelPortOutput::process(AudioSampleBuffer& continuousBuffer)
 {
     std::vector<int> pinsToTurnOff;
     bool turnOff = false;
-    int currentSample = getTimestamp(0) + getNumSamples(0);
+    /*need to find the equivalent here*/
+    /*required updated for v6*/
+    /*int currentSample = getTimestamp(0) + getNumSamples(0);*/
+    /*mismatch*/
+    int currentSample = continuousBuffer.getSample(0, 0) + continuousBuffer.getNumSamples();
 
     // Get pins to be removed
     for (const auto& pair : pinTurnOffSamples) {
@@ -100,16 +104,18 @@ void ParallelPortOutput::process(AudioSampleBuffer& continuousBuffer)
 }
 
 
-void ParallelPortOutput::handleEvent(const EventChannel* channelInfo, const MidiMessage& event, int samplePosition)
+void ParallelPortOutput::handleTTLEvent(TTLEventPtr event)
 {
-    
-    if (Event::getEventType(event) == EventChannel::TTL) 
+    /*Event::getEventType(event) == EventChannel::TTL*/
+    /*required updated for v6*/
+    if (event->getEventType() == EventChannel::TTL) 
     {
-        TTLEventPtr ttl = TTLEvent::deserializeFromMessage(event, channelInfo);
+        /*required updated for v6*/
+        //TTLEventPtr ttl = TTLEvent::deserializeFromMessage(event, channelInfo);
 
-        auto it = channelPinMap.find(ttl->getChannel());
+        auto it = channelPinMap.find(event->getState());
 
-        if (it != channelPinMap.end() && ttl->getState())
+        if (it != channelPinMap.end() && event->getState())
         {
             
             int pin = it->second;
@@ -117,8 +123,12 @@ void ParallelPortOutput::handleEvent(const EventChannel* channelInfo, const Midi
             pinState |= (1 << (pin - 1));
             std::cout << "New pin state" << toBinaryString(pinState) << std::endl;
             sendState();
-            int sampleRate = getTotalDataChannels() > 0 ? getDataChannel(0)->getSampleRate() : 30000;
-            pinTurnOffSamples[pin] = ttl->getTimestamp() + int(std::floor(duration * sampleRate / 1000.0f));
+            /*required updated for v6*/
+            /*mismatch*/
+            int sampleRate = 200;// getTotalDataChannels() > 0 ? getDataChannel(0)->getSampleRate() : 30000;
+            /*pinTurnOffSamples[pin] = ttl->getTimestamp() + int(std::floor(duration * sampleRate / 1000.0f));*/
+            pinTurnOffSamples[pin] = event->getTimestampInSeconds() + int(std::floor(duration * sampleRate / 1000.0f));
+
         }
     }
 }
@@ -199,7 +209,8 @@ bool ParallelPortOutput::setMapPath(std::string filePath)
     return true;
 }
 
-bool ParallelPortOutput::disable()
+/*required updated for v6*/
+bool ParallelPortOutput::stopAcquisition()
 {
     pinState = 0x00;
     sendState();

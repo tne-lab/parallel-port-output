@@ -27,8 +27,8 @@ bool isInteger(const String& input) {
     return input.containsOnly("0123456789");
 }
 
-ParallelPortOutputEditor::ParallelPortOutputEditor(GenericProcessor* parentNode, bool useDefaultParameterEditors)
-    : GenericEditor(parentNode, useDefaultParameterEditors)
+ParallelPortOutputEditor::ParallelPortOutputEditor(GenericProcessor* parentNode)
+    : VisualizerEditor(parentNode, "Parallel Port Output")
 
 {
     desiredWidth = 180;
@@ -208,7 +208,7 @@ void ParallelPortOutputEditor::setDisplayedPort(int port)
 }
 
 
-void ParallelPortOutputEditor::saveCustomParameters(XmlElement* xml)
+void ParallelPortOutputEditor::saveVisualizerEditorParameters(XmlElement* xml)
 {
     auto processor = static_cast<ParallelPortOutput*>(getProcessor());
     XmlElement* mainNode = xml->createNewChildElement("PARALLELPORTOUTPUT");
@@ -217,7 +217,7 @@ void ParallelPortOutputEditor::saveCustomParameters(XmlElement* xml)
     mainNode->setAttribute("map_path", processor->channelMapPath);
 }
 
-void ParallelPortOutputEditor::loadCustomParameters(XmlElement* xml)
+void ParallelPortOutputEditor::loadVisualizerEditorParameters(XmlElement* xml)
 {
     forEachXmlChildElementWithTagName(*xml, xmlNode, "PARALLELPORTOUTPUT")
     {
@@ -234,4 +234,9 @@ void ParallelPortOutputEditor::loadCustomParameters(XmlElement* xml)
             }
         }
     }
+}
+
+Visualizer* ParallelPortOutputEditor::createNewCanvas()
+{
+    return canvas.get();
 }

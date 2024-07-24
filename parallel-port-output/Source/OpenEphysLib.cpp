@@ -2,7 +2,7 @@
 ------------------------------------------------------------------
 
 This file is part of the Open Ephys GUI
-Copyright (C) 2013 Open Ephys
+Copyright (C) 2024 Open Ephys
 
 ------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <PluginInfo.h>
 #include "ParallelPortOutput.h"
 #include <string>
-#ifdef WIN32
+#ifdef _WIN32
 #include <Windows.h>
 #define EXPORT __declspec(dllexport)
 #else
@@ -34,22 +34,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using namespace Plugin;
 #define NUM_PLUGINS 1
 
-extern "C" EXPORT void getLibInfo(Plugin::LibraryInfo* info)
+extern "C" EXPORT void getLibInfo(Plugin::LibraryInfo * info)
 {
 	info->apiVersion = PLUGIN_API_VER;
 	info->name = "Parallel Port Output";
-	info->libVersion = 1;
+	info->libVersion = "0.1.0";
 	info->numPlugins = NUM_PLUGINS;
 }
 
-extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo* info)
+extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo * info)
 {
 	switch (index)
 	{
 	case 0:
-		info->type = Plugin::PLUGIN_TYPE_PROCESSOR;
+		info->type = Plugin::Type::PROCESSOR;
 		info->processor.name = "Parallel Port Output";
-		info->processor.type = Plugin::SinkProcessor;
+		info->processor.type = Processor::Type::SINK;
 		info->processor.creator = &(Plugin::createProcessor<ParallelPortOutput>);
 		break;
 	default:
