@@ -125,10 +125,11 @@ void ParallelPortOutput::handleTTLEvent(TTLEventPtr event)
             sendState();
             /*required updated for v6*/
             /*mismatch*/
-            int sampleRate = 200;// getTotalDataChannels() > 0 ? getDataChannel(0)->getSampleRate() : 30000;
+            ContinuousChannel* contChannel = stream->getContinuousChannels().getUnchecked(0);
+            int sampleRate = (contChannel != nullptr) ? contChannel->getSampleRate() : 30000;
+            //int sampleRate = getTotalDataChannels() > 0 ? contChannel->getSampleRate() : 30000;
             /*pinTurnOffSamples[pin] = ttl->getTimestamp() + int(std::floor(duration * sampleRate / 1000.0f));*/
-            pinTurnOffSamples[pin] = event->getTimestampInSeconds() + int(std::floor(duration * sampleRate / 1000.0f));
-
+            pinTurnOffSamples[pin] = static_cast<uint64_t>(std::floor(event->getTimestampInSeconds() * sampleRate)) + static_cast<uint64_t>(std::floor(duration * sampleRate / 1000.0f));
         }
     }
 }

@@ -46,6 +46,9 @@ public:
         DURATION
     };
 
+    int chan;
+    float sampleRate;
+    const DataStream* stream;
     std::string channelMapPath;
 
 private:
