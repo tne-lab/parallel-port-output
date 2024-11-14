@@ -15,3 +15,18 @@ Currently, only Windows 64-bit systems are supported through using the inpoutx64
 
 ### Building the plugins
 Building the plugins requires [CMake](https://cmake.org/). Detailed instructions on how to build open ephys plugins with CMake can be found in [our wiki](https://open-ephys.atlassian.net/wiki/spaces/OEW/pages/1259110401/Plugin+CMake+Builds).
+
+## Parallel Port additional information
+### Drivers and parallel port connected
+* Obtain the appropriate drivers from the manufacturer's website.
+* Install the drivers correctly.
+* After installation, open Device Manager.
+* If the "Ports (COM & LPT)" is not visible, go to View and select Show hidden devices.
+* Verify that the parallel port appears under "Ports (COM & LPT)".
+* The parallel port will be listed as LPT.
+
+### Parallel port installed but is not visible on the OE GUI.
+* Check the command prompt for any error messages under the parallel-port-output. If it shows "DLL Error 0x7e," proceed to the next step.
+* Copy the DLL file from the lib folder.
+* Paste the DLL file into the shared folder located in plugin-GUI--Build--Release--shared.
+* Next, Make sure the DLLs in the plugin-GUI--Build--Release--plugin folder match the DLLs built for the parallel port.
