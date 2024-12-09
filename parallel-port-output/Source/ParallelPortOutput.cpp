@@ -27,7 +27,7 @@ void _stdcall Out32(short PortAddress, short data);
 
 
 ParallelPortOutput::ParallelPortOutput()
-    : GenericProcessor("ParallelPortOutput")
+    : GenericProcessor("Parallel Port Output")
     , port(0)
     , duration(10)
     , pinState(0x00)

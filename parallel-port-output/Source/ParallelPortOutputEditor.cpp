@@ -31,7 +31,7 @@ ParallelPortOutputEditor::ParallelPortOutputEditor(GenericProcessor* parentNode)
     : VisualizerEditor(parentNode, "Parallel Port Output")
 
 {
-    desiredWidth = 180;
+    desiredWidth = 225;
 
     const int TEXT_HT = 18;
     int xPos = 10;
@@ -61,17 +61,17 @@ ParallelPortOutputEditor::ParallelPortOutputEditor(GenericProcessor* parentNode)
     addAndMakeVisible(fileNameLabel);
 
 
-    Label* portText = new Label("PortLabel", "Port:");
+    Label* portText = new Label("PortLabel", "Port:   ");
     portText->setBounds(xPos, 70, 140, 25);
     addAndMakeVisible(portText);
 
     Label* hexLabel = new Label("HexLabel", "0x");
-    hexLabel->setBounds(xPos + 30, 70, 40, 25);
+    hexLabel->setBounds(xPos + 45, 70, 40, 25);
     hexLabel->setColour(Label::textColourId, Colours::black);
     addAndMakeVisible(hexLabel);
 
     portLabel = new Label("Port", String::toHexString(p->port).toUpperCase());
-    portLabel->setBounds(xPos + 50,75,60,18);
+    portLabel->setBounds(xPos + 125,75,60,18);
     portLabel->setFont(Font("Default", 15, Font::plain));
     portLabel->setColour(Label::textColourId, Colours::white);
     portLabel->setColour(Label::backgroundColourId, Colours::grey);
@@ -79,13 +79,13 @@ ParallelPortOutputEditor::ParallelPortOutputEditor(GenericProcessor* parentNode)
     portLabel->addListener(this);
     addAndMakeVisible(portLabel);
 
-    Label* durationText = new Label("Duration", "Duration:");
+    Label* durationText = new Label("Duration", "Duration (ms):");
     durationText->setBounds(xPos, 100, 140, 25);
     durationText->setColour(Label::textColourId, Colours::black);
     addAndMakeVisible(durationText);
 
     durationLabel = new Label("Duration", String(p->duration));
-    durationLabel->setBounds(xPos + 60, 104, 40, TEXT_HT);
+    durationLabel->setBounds(xPos + 125, 104, 60, TEXT_HT);
     durationLabel->setFont(Font("Default", 15, Font::plain));
     durationLabel->setColour(Label::textColourId, Colours::white);
     durationLabel->setColour(Label::backgroundColourId, Colours::grey);
@@ -93,10 +93,10 @@ ParallelPortOutputEditor::ParallelPortOutputEditor(GenericProcessor* parentNode)
     durationLabel->addListener(this);
     addAndMakeVisible(durationLabel);
 
-    Label* durationMs = new Label("DurationMS", "ms");
-    durationMs->setBounds(xPos + 100, 100, 140, 25);
-    durationMs->setColour(Label::textColourId, Colours::black);
-    addAndMakeVisible(durationMs);
+    //Label* durationMs = new Label("DurationMS", "ms");
+    //durationMs->setBounds(xPos + 100, 100, 140, 25);
+    //durationMs->setColour(Label::textColourId, Colours::black);
+    //addAndMakeVisible(durationMs);
 }
 
 void ParallelPortOutputEditor::buttonClicked(Button* button)
