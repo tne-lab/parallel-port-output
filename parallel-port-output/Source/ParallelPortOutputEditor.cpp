@@ -60,31 +60,6 @@ ParallelPortOutputEditor::ParallelPortOutputEditor(GenericProcessor* parentNode)
     fileNameLabel->addListener(this);
     addAndMakeVisible(fileNameLabel);
 
-    //inChanLabel = new Label("InChan", "In:");
-    //inChanLabel->setBounds(xPos, yPos - 5, 140, 25);
-    //addAndMakeVisible(inChanLabel);
-
-    //inChanBox = new ComboBox("Input event channel");
-    //for (int chan = 1; chan <= 8; chan++)
-    //    inChanBox->addItem(String(chan), chan);
-    //inChanBox->setSelectedId(p->eventChannel + 1);
-    //inChanBox->setBounds(xPos + 25, yPos, 40, TEXT_HT);
-    //inChanBox->setTooltip("Input TTL event channel");
-    //inChanBox->addListener(this);
-    //addAndMakeVisible(inChanBox);
-
-    //Label* pinLabel = new Label("Out", "Out:");
-    //pinLabel->setBounds(85, yPos - 5, 140, 25);
-    //addAndMakeVisible(pinLabel);
-
-    //pinBox = new ComboBox("Pin");
-    //for (int chan = 1; chan <= 8; chan++)
-    //    pinBox->addItem(String(chan), chan);
-    //pinBox->setSelectedId(p->eventChannel + 1);
-    //pinBox->setBounds(115, yPos, 40, TEXT_HT);
-    //pinBox->setTooltip("Parallel port pin to send events out");
-    //pinBox->addListener(this);
-    //addAndMakeVisible(pinBox);
 
     Label* portText = new Label("PortLabel", "Port:");
     portText->setBounds(xPos, 70, 140, 25);
@@ -179,28 +154,6 @@ void ParallelPortOutputEditor::labelTextChanged(juce::Label* label)
     }
 }
 
-void ParallelPortOutputEditor::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
-{
-    //auto processor = static_cast<ParallelPortOutput*>(getProcessor());
-    //if (comboBoxThatHasChanged == inChanBox)
-    //{
-    //    processor->setParameter(ParallelPortOutput::OUTPUT_CHAN,
-    //        static_cast<float>(inChanBox->getSelectedId() - 1));
-    //}
-    //else if (comboBoxThatHasChanged == pinBox)
-    //{
-    //    int pinValue = pinBox->getSelectedId();
-    //    std::cout << "Editor setting pin value: " << pinValue << std::endl;
-    //    if (pinValue < 0 && pinValue <= 8)
-    //    {
-    //        processor->setParameter(ParallelPortOutput::PIN, static_cast<float>(pinValue));
-    //    }
-    //    else
-    //    {
-    //        pinBox->setSelectedId(processor->pin);
-    //    }
-    //}
-}
 
 void ParallelPortOutputEditor::setDisplayedPort(int port)
 {

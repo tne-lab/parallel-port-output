@@ -25,13 +25,10 @@ public:
 
     void setParameter(int parameterIndex, float newValue) override;
 
-    /*start required updated for v6*/ 
     void process(AudioBuffer<float>& continuousBuffer) override;
-
 
     /** Responds to incoming events if a stimEventChannel is selected. */
     void handleTTLEvent(TTLEventPtr event) override;
-    //void handleEvent(const EventChannel* channelInfo, const MidiMessage& event, int samplePosition = 0) override;
 
     /*bool disable() override; is bool stopAcquisition() override; updated in v6*/
     bool stopAcquisition() override;
@@ -39,7 +36,6 @@ public:
 
     bool setMapPath(std::string filePath);
 
-    // for consistency across, might be better to keep it out
     enum Parameter
     {
         PORT,
@@ -59,6 +55,7 @@ private:
     int duration;
 
     uint8_t pinState;
+
 
     // Map of incoming TTL channels to pin numbers (range 1-8 for both values)
     std::map<int, int> channelPinMap;

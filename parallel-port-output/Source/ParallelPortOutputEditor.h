@@ -25,7 +25,6 @@
 
 class ParallelPortOutputEditor : public VisualizerEditor
     , public Label::Listener
-    , public ComboBox::Listener
     , public Button::Listener
 {
 public:
@@ -38,7 +37,7 @@ public:
     Visualizer* createNewCanvas();
 
     void labelTextChanged(juce::Label* label) override;
-    void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+
 
     void setDisplayedPort(int port);
 

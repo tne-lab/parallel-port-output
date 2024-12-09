@@ -31,6 +31,7 @@ ParallelPortOutput::ParallelPortOutput()
     , port(0)
     , duration(10)
     , pinState(0x00)
+    , sampleRate(0.0)
 {
     setProcessorType(Plugin::Processor::SINK);
 }
@@ -63,16 +64,23 @@ void ParallelPortOutput::sendState()
     Out32(port, pinState);
 }
 
-
 void ParallelPortOutput::process(AudioSampleBuffer& continuousBuffer)
 {
     std::vector<int> pinsToTurnOff;
     bool turnOff = false;
-    /*need to find the equivalent here*/
-    /*required updated for v6*/
-    /*int currentSample = getTimestamp(0) + getNumSamples(0);*/
-    /*mismatch*/
-    int currentSample = continuousBuffer.getSample(0, 0) + continuousBuffer.getNumSamples();
+
+    int nSamples = 0;
+    int nblock = 0;
+    for (auto stream : getDataStreams())
+    {
+        nSamples = getFirstSampleNumberForBlock(stream->getStreamId());
+        sampleRate = stream->getSampleRate();
+        nblock = getNumSamplesInBlock(stream->getStreamId());
+        //std::cout << "nSamples: " << nSamples << std::endl;
+        break;
+    }
+
+    int currentSample = nSamples+ nblock;// +continuousBuffer.getNumSamples();
 
     // Get pins to be removed
     for (const auto& pair : pinTurnOffSamples) {
@@ -80,12 +88,15 @@ void ParallelPortOutput::process(AudioSampleBuffer& continuousBuffer)
         uint64_t turnOffSample = pair.second;
 
         if (currentSample >= turnOffSample) {
-            std::cout << "Turning off pin: " << pin << ". Current state" << toBinaryString(pinState) << "Samples:" << currentSample << ". Turn off:" << turnOffSample << std::endl;
+            std::cout << "Turning off pin: " << pin
+                << " Current state: " << toBinaryString(pinState)
+                << " Current samples: " << currentSample
+                << " Turn off at sample: " << turnOffSample
+                << std::endl;            
             pinsToTurnOff.push_back(pin);
             turnOff = true;
         }
     }
-
     // Turn off the pins and remove them from the map
     for (int pin : pinsToTurnOff) {
         pinState &= ~(1 << (pin - 1));
@@ -97,39 +108,39 @@ void ParallelPortOutput::process(AudioSampleBuffer& continuousBuffer)
     {
         std::cout << "Turn off state: " << toBinaryString(pinState) << std::endl;
         sendState();
-    }
- 
-    
+    }    
     checkForEvents(false);
 }
 
 
 void ParallelPortOutput::handleTTLEvent(TTLEventPtr event)
 {
+    const int eventChannel = event->getLine();
+    //std::cout << "Event output "<< eventChannel +1 << ", timestamps ::" << event->getSampleNumber() << std::endl;
     /*Event::getEventType(event) == EventChannel::TTL*/
     /*required updated for v6*/
     if (event->getEventType() == EventChannel::TTL) 
     {
         /*required updated for v6*/
-        //TTLEventPtr ttl = TTLEvent::deserializeFromMessage(event, channelInfo);
+        
 
-        auto it = channelPinMap.find(event->getState());
-
+        auto it = channelPinMap.find(eventChannel);
+        
         if (it != channelPinMap.end() && event->getState())
         {
-            
             int pin = it->second;
-            std::cout << "Setting pin:" << pin << ". Old pin state" << toBinaryString(pinState) << std::endl;
+            int oldpin = pin;
+            uint8_t pinStatete = pinState;
             pinState |= (1 << (pin - 1));
-            std::cout << "New pin state" << toBinaryString(pinState) << std::endl;
+            std::cout << "Setting pin: " << oldpin
+                << ". Old pin state: " << toBinaryString(pinStatete)
+                << ", New pin state: " << toBinaryString(pinState)
+                << " at timestamp: " << event->getSampleNumber()
+                << " Current timestamp"
+                << std::endl;
             sendState();
-            /*required updated for v6*/
-            /*mismatch*/
-            ContinuousChannel* contChannel = stream->getContinuousChannels().getUnchecked(0);
-            int sampleRate = (contChannel != nullptr) ? contChannel->getSampleRate() : 30000;
-            //int sampleRate = getTotalDataChannels() > 0 ? contChannel->getSampleRate() : 30000;
-            /*pinTurnOffSamples[pin] = ttl->getTimestamp() + int(std::floor(duration * sampleRate / 1000.0f));*/
-            pinTurnOffSamples[pin] = static_cast<uint64_t>(std::floor(event->getTimestampInSeconds() * sampleRate)) + static_cast<uint64_t>(std::floor(duration * sampleRate / 1000.0f));
+          
+            pinTurnOffSamples[pin] = event->getSampleNumber()+int(std::floor(duration * sampleRate / 1000.0f)); //static_cast<uint64_t>(std::floor(event->getSampleNumber() * sampleRate)) + static_cast<uint64_t>(std::floor(duration * sampleRate / 1000.0f));
         }
     }
 }
